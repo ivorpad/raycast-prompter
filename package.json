@@ -1,0 +1,212 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "prompter",
+  "title": "Prompter",
+  "description": "Rewrite the selected text with a fixed set of LLM prompts: fix errors, shorten, lengthen, change tone, format for Slack.",
+  "icon": "extension-icon.png",
+  "author": "ivorpad",
+  "categories": [
+    "Productivity"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "fix-errors",
+      "title": "Fix Errors",
+      "description": "Fix spelling, grammar and punctuation in the selected text.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "make-shorter",
+      "title": "Make Shorter",
+      "description": "Cut the selected text down without losing its points.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "make-longer",
+      "title": "Make Longer",
+      "description": "Expand the selected text with more detail.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "more-professional",
+      "title": "More Professional",
+      "description": "Rewrite the selected text in a professional register.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "more-casual",
+      "title": "More Casual",
+      "description": "Rewrite the selected text in a casual register.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "for-slack",
+      "title": "For Slack",
+      "description": "Reformat the selected text as a Slack message.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "text",
+          "placeholder": "Text",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "select-model",
+      "title": "Select Model",
+      "description": "Pick the model from the list your provider exposes.",
+      "mode": "view"
+    },
+    {
+      "name": "prompts",
+      "title": "Prompts",
+      "description": "Browse, run, edit, add or delete prompts, and edit the shared rules.",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "prompt",
+          "placeholder": "Prompt",
+          "type": "text",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "preferences": [
+    {
+      "name": "provider",
+      "title": "Provider",
+      "description": "Which API the prompts are sent to. Pick Other for any OpenAI-compatible server and set its Base URL.",
+      "type": "dropdown",
+      "required": true,
+      "default": "openai",
+      "data": [
+        {
+          "title": "OpenAI",
+          "value": "openai"
+        },
+        {
+          "title": "OpenRouter",
+          "value": "openrouter"
+        },
+        {
+          "title": "Anthropic",
+          "value": "anthropic"
+        },
+        {
+          "title": "Other OpenAI-compatible (Groq, Ollama, LM Studio…)",
+          "value": "custom"
+        }
+      ]
+    },
+    {
+      "name": "apiKey",
+      "title": "API Key",
+      "description": "API key for the selected provider.",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "baseUrl",
+      "title": "Base URL",
+      "description": "Overrides the provider default. Required for Other, e.g. http://localhost:11434/v1 for Ollama.",
+      "type": "textfield",
+      "required": false,
+      "placeholder": "https://openrouter.ai/api/v1"
+    },
+    {
+      "name": "output",
+      "title": "Output",
+      "description": "What to do with the rewritten text.",
+      "type": "dropdown",
+      "required": false,
+      "default": "preview",
+      "data": [
+        {
+          "title": "Preview, then paste or copy",
+          "value": "preview"
+        },
+        {
+          "title": "Paste over the selection",
+          "value": "paste"
+        },
+        {
+          "title": "Copy to clipboard",
+          "value": "copy"
+        }
+      ]
+    },
+    {
+      "name": "autoCopy",
+      "title": "Preview",
+      "label": "Copy the result to the clipboard as soon as it arrives",
+      "description": "In Preview mode, the rewritten text is copied automatically; Enter still pastes it. Off means ⌘Enter copies.",
+      "type": "checkbox",
+      "required": false,
+      "default": true
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^2.1.3",
+    "@raycast/utils": "^2.3.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.2.0",
+    "@types/node": "22.19.17",
+    "@types/react": "19.0.10",
+    "eslint": "^10.9.1",
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "ray build",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "publish": "ray publish"
+  }
+}
