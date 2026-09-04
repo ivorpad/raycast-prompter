@@ -1,9 +1,9 @@
 # Prompter
 
-![Demo: Fix Errors in preview mode, then Make Shorter with Output set to paste](docs/demo.gif)
+![Demo: select text, run Fix Errors, Enter pastes the rewrite over the selection](docs/demo.gif)
 
-Fix Errors in preview mode with the copy toast and Enter to paste, then Make Shorter with Output set
-to paste. [Full-quality video](docs/demo.mp4).
+Select text, run a prompt, Enter pastes the rewrite over the selection. It is copied to the clipboard as
+soon as it arrives, and an Output preference can skip the preview and paste or copy directly.
 
 A [Raycast](https://raycast.com) extension that rewrites text with an LLM, using your own API key.
 Six prompts ship as commands, so each can have a hotkey: **Fix Errors**, **Make Shorter**,
