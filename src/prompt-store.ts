@@ -41,16 +41,20 @@ export function usePrompts() {
     rules,
     isLoading,
 
-    /** Creates a custom prompt (no id), updates a custom one, or overrides a built-in's instruction. */
-    save: ({ id, title, instruction }: PromptInput) =>
-      update((s) => {
-        if (id && BUILT_IN_PROMPTS.some((p) => p.id === id)) {
-          return { ...s, overrides: { ...s.overrides, [id]: instruction } };
-        }
-        const prompt: Prompt = { id: id ?? randomUUID(), title, instruction, builtIn: false };
-        const custom = id ? s.custom.map((p) => (p.id === id ? prompt : p)) : [...s.custom, prompt];
-        return { ...s, custom };
-      }),
+    /** Creates a custom prompt (no id), updates a custom one, or overrides a built-in's instruction. Returns the result. */
+    save: async ({ id, title, instruction }: PromptInput): Promise<Prompt> => {
+      const builtIn = id ? BUILT_IN_PROMPTS.find((p) => p.id === id) : undefined;
+      if (builtIn) {
+        await update((s) => ({ ...s, overrides: { ...s.overrides, [builtIn.id]: instruction } }));
+        return { ...builtIn, instruction, edited: true };
+      }
+      const prompt: Prompt = { id: id ?? randomUUID(), title, instruction, builtIn: false };
+      await update((s) => ({
+        ...s,
+        custom: id ? s.custom.map((p) => (p.id === id ? prompt : p)) : [...s.custom, prompt],
+      }));
+      return prompt;
+    },
 
     remove: (id: string) => update((s) => ({ ...s, custom: s.custom.filter((p) => p.id !== id) })),
 

@@ -52,8 +52,8 @@ The title bar shows which one was used, e.g. "Fix Errors · Clipboard".
 
 **Output** preference:
 
-- **Preview** (default): the result is shown as plain text, exactly as it will be pasted, and copied
-  to the clipboard on arrival (a checkbox turns that off). `↵` pastes over the selection, `⌘↵` copies,
+- **Preview** (default): the result is rendered as markdown, line breaks kept, and copied to the
+  clipboard on arrival (a checkbox turns that off). Paste and copy use the raw text. `↵` pastes over the selection, `⌘↵` copies,
   `⌘R` retries, `⌘⇧M` changes model, `⌘I` shows model, source and word counts.
 - **Paste**: pasted over the selection as soon as it arrives; Raycast closes.
 - **Copy**: copied to the clipboard; Raycast closes.
@@ -69,15 +69,20 @@ The **Prompts** command lists built-in and custom prompts with the full instruct
 | `↵` | Run on the current selection or clipboard |
 | `⌘E` | Edit (built-ins: the instruction only; the command keeps its name) |
 | `⌘D` | Duplicate, e.g. to make a variant of a built-in |
+| `⌘⇧A` | Add to Root Search: a Quicklink for a custom prompt |
 | `⌘N` | New prompt |
 | `⌃X` | Delete a custom prompt |
 | `⌘⇧R` | Edit the shared rules sent before every task |
 
 Edited built-ins show an "Edited" tag and a **Reset to Default** action.
 
-Raycast commands are fixed in the manifest, so a custom prompt can't become a command. Two ways to run
-one directly: type `prompts <name>` in Raycast, or use **Create Quicklink** from the prompt's action
-menu, which makes a Raycast Quicklink you can give a hotkey like any command.
+Raycast commands are fixed in the manifest, so a custom prompt can't become a command. What it can be
+is a Quicklink: an entry in root search under the prompt's name, with an alias and a hotkey if you
+want them. Saving a new prompt lands on a screen whose first action, **Add to Root Search**, opens
+Raycast's Create Quicklink form pre-filled; Enter there and the prompt is in root search. The same
+action is on every custom prompt in the list (`⌘⇧A`). Deleting a prompt does not delete its Quicklink.
+
+Typing `prompts <name>` in Raycast also runs a prompt by name.
 
 Prompts and rules live in the extension's LocalStorage. Nothing is sent anywhere except to the
 provider you configured.
@@ -112,7 +117,8 @@ src/
   model.ts            useModel(): chosen model id, keyed by provider
   model-list.tsx      models from /models, cached per provider
   input.ts            typed argument → selection → clipboard
-  markdown.ts         escape markdown so previews show the raw text
+  markdown.ts         asMarkdown(): keep line breaks; Raycast ignores backslash escapes, so no escaping
+  quicklink.ts        deeplink and Quicklink for a prompt (root-search entry)
   transform.tsx       shared view: input → complete() → preview / paste / copy
   select-model.tsx    Select Model command
   <prompt-id>.tsx     one entry per built-in prompt command

@@ -20,7 +20,7 @@ import { useRef, useState } from "react";
 import { systemPrompt } from "./builtin-prompts";
 import { getInput, sourceLabel } from "./input";
 import { CompleteResult, getProvider, needsPreferences } from "./llm";
-import { asPlainMarkdown, wordCount } from "./markdown";
+import { asMarkdown, wordCount } from "./markdown";
 import { useModel } from "./model";
 import { ModelList } from "./model-list";
 import { usePrompts } from "./prompt-store";
@@ -82,9 +82,9 @@ export function Transform({ promptId, text }: Props) {
     : input.error
       ? input.error.message
       : result
-        ? asPlainMarkdown(result)
+        ? asMarkdown(result)
         : input.data
-          ? `_Original, rewriting…_\n\n${asPlainMarkdown(input.data.text)}`
+          ? `_Original, rewriting…_\n\n${asMarkdown(input.data.text)}`
           : "";
 
   return (
