@@ -1,7 +1,9 @@
-import { Action, ActionPanel, Form, Icon, showToast, Toast, useNavigation } from "@raycast/api";
+import { Action, ActionPanel, Detail, Form, Icon, showToast, Toast, useNavigation } from "@raycast/api";
 import { FormValidation, useForm } from "@raycast/utils";
+import { useState } from "react";
 import { DEFAULT_RULES, Prompt } from "./builtin-prompts";
 import { PromptInput } from "./prompt-store";
+import { promptQuicklink } from "./quicklink";
 
 interface PromptValues {
   title: string;
@@ -13,11 +15,13 @@ interface PromptFormProps {
   prompt?: Prompt;
   /** Pre-filled values for a new prompt (used by Duplicate). */
   initial?: Partial<PromptValues>;
-  onSave: (input: PromptInput) => Promise<void>;
+  onSave: (input: PromptInput) => Promise<Prompt>;
 }
 
 export function PromptForm({ prompt, initial, onSave }: PromptFormProps) {
   const { pop } = useNavigation();
+  // A new prompt turns the form into the "added" screen, so Esc from there returns to the list.
+  const [added, setAdded] = useState<Prompt>();
   const { handleSubmit, itemProps } = useForm<PromptValues>({
     initialValues: {
       title: prompt?.title ?? initial?.title ?? "",
@@ -25,11 +29,21 @@ export function PromptForm({ prompt, initial, onSave }: PromptFormProps) {
     },
     validation: { title: FormValidation.Required, instruction: FormValidation.Required },
     onSubmit: async (values) => {
-      await onSave({ id: prompt?.id, title: values.title.trim(), instruction: values.instruction.trim() });
-      await showToast({ style: Toast.Style.Success, title: prompt ? "Prompt saved" : "Prompt added" });
-      pop();
+      const saved = await onSave({
+        id: prompt?.id,
+        title: values.title.trim(),
+        instruction: values.instruction.trim(),
+      });
+      if (prompt) {
+        await showToast({ style: Toast.Style.Success, title: "Prompt saved" });
+        pop();
+      } else {
+        setAdded(saved);
+      }
     },
   });
+
+  if (added) return <PromptAdded prompt={added} />;
 
   return (
     <Form
@@ -52,6 +66,31 @@ export function PromptForm({ prompt, initial, onSave }: PromptFormProps) {
         {...itemProps.instruction}
       />
     </Form>
+  );
+}
+
+/** Shown once a new prompt is saved: the one step that puts it in root search next to the built-in commands. */
+function PromptAdded({ prompt }: { prompt: Prompt }) {
+  const { pop } = useNavigation();
+  const markdown = [
+    `**${prompt.title}** is saved and runs from the Prompts list.`,
+    "",
+    "To run it from Raycast's root search like the built-in commands, add it as a Quicklink.",
+    "It gets its own entry under this name, and can have an alias and a hotkey.",
+    "Raycast can't add commands while an extension runs, so this is the way.",
+  ].join("\n");
+
+  return (
+    <Detail
+      navigationTitle="Prompt Added"
+      markdown={markdown}
+      actions={
+        <ActionPanel>
+          <Action.CreateQuicklink title="Add to Root Search" icon={Icon.Link} quicklink={promptQuicklink(prompt)} />
+          <Action title="Back to Prompts" icon={Icon.ArrowLeft} onAction={pop} />
+        </ActionPanel>
+      }
+    />
   );
 }
 

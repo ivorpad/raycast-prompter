@@ -1,15 +1,10 @@
-import { Action, ActionPanel, Alert, confirmAlert, environment, Icon, Keyboard, List } from "@raycast/api";
+import { Action, ActionPanel, Alert, confirmAlert, Icon, Keyboard, List } from "@raycast/api";
 import { Prompt } from "./builtin-prompts";
-import { asPlainMarkdown } from "./markdown";
+import { asMarkdown } from "./markdown";
 import { PromptForm, RulesForm } from "./prompt-form";
 import { usePrompts } from "./prompt-store";
+import { promptDeeplink, promptQuicklink } from "./quicklink";
 import { Transform } from "./transform";
-
-/** Deeplink that runs the prompt on the current selection; Raycast Quicklinks can bind it to a hotkey. */
-function deeplink(prompt: Prompt): string {
-  const args = encodeURIComponent(JSON.stringify({ prompt: prompt.id }));
-  return `raycast://extensions/${environment.ownerOrAuthorName}/${environment.extensionName}/prompts?arguments=${args}`;
-}
 
 export function PromptsList() {
   const store = usePrompts();
@@ -41,7 +36,7 @@ export function PromptsList() {
       accessories={p.edited ? [{ tag: "Edited" }] : undefined}
       detail={
         <List.Item.Detail
-          markdown={asPlainMarkdown(p.instruction)}
+          markdown={asMarkdown(p.instruction)}
           metadata={
             <List.Item.Detail.Metadata>
               <List.Item.Detail.Metadata.Label title="Type" text={p.builtIn ? "Built-in" : "Custom"} />
@@ -54,6 +49,14 @@ export function PromptsList() {
         <ActionPanel>
           <ActionPanel.Section>
             <Action.Push title="Run" icon={Icon.Play} target={<Transform promptId={p.id} />} />
+            {!p.builtIn && (
+              <Action.CreateQuicklink
+                title="Add to Root Search"
+                icon={Icon.Link}
+                shortcut={{ modifiers: ["cmd", "shift"], key: "a" }}
+                quicklink={promptQuicklink(p)}
+              />
+            )}
             <Action.Push
               title="Edit"
               icon={Icon.Pencil}
@@ -80,6 +83,7 @@ export function PromptsList() {
                 onAction={async () => {
                   const ok = await confirmAlert({
                     title: `Delete "${p.title}"?`,
+                    message: "A Quicklink made for it stays in root search until you delete it there.",
                     primaryAction: { title: "Delete", style: Alert.ActionStyle.Destructive },
                   });
                   if (ok) await store.remove(p.id);
@@ -88,11 +92,18 @@ export function PromptsList() {
             )}
           </ActionPanel.Section>
           <ActionPanel.Section>
-            <Action.CreateQuicklink
-              title="Create Quicklink (for a Hotkey)"
-              quicklink={{ name: p.title, link: deeplink(p) }}
+            {p.builtIn && (
+              <Action.CreateQuicklink
+                title="Create Quicklink (Run with an Argument)"
+                icon={Icon.Link}
+                quicklink={promptQuicklink(p)}
+              />
+            )}
+            <Action.CopyToClipboard
+              title="Copy Deeplink"
+              shortcut={Keyboard.Shortcut.Common.CopyDeeplink}
+              content={promptDeeplink(p)}
             />
-            <Action.CopyToClipboard title="Copy Deeplink" content={deeplink(p)} />
             {newPrompt}
             {editRules}
           </ActionPanel.Section>
@@ -121,7 +132,7 @@ export function PromptsList() {
             title="New Prompt…"
             icon={Icon.Plus}
             detail={
-              <List.Item.Detail markdown="Add your own prompt. It runs from this list, or from a hotkey through a Quicklink." />
+              <List.Item.Detail markdown="Add your own prompt. It runs from this list, and one more step puts it in Raycast's root search next to the built-in commands." />
             }
             actions={
               <ActionPanel>
