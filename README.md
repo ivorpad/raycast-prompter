@@ -9,6 +9,9 @@ and change the rules every prompt shares.
 
 ![Fix Errors result: the corrected text, Enter pastes it over the selection](metadata/prompter-2.png)
 
+[Demo video](docs/demo.mp4): Fix Errors in preview mode with the copy toast and Enter to paste, then
+Make Shorter with Output set to paste.
+
 ## Install
 
 Not on the Raycast Store. Clone and build it into Raycast:
