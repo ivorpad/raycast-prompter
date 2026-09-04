@@ -9,8 +9,10 @@ and change the rules every prompt shares.
 
 ![Fix Errors result: the corrected text, Enter pastes it over the selection](metadata/prompter-2.png)
 
-[Demo video](docs/demo.mp4): Fix Errors in preview mode with the copy toast and Enter to paste, then
-Make Shorter with Output set to paste.
+![Demo: Fix Errors in preview mode, then Make Shorter with Output set to paste](docs/demo.gif)
+
+Fix Errors in preview mode with the copy toast and Enter to paste, then Make Shorter with Output set
+to paste. [Full-quality video](docs/demo.mp4).
 
 ## Install
 
