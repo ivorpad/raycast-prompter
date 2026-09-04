@@ -1,5 +1,10 @@
 # Prompter
 
+![Demo: Fix Errors in preview mode, then Make Shorter with Output set to paste](docs/demo.gif)
+
+Fix Errors in preview mode with the copy toast and Enter to paste, then Make Shorter with Output set
+to paste. [Full-quality video](docs/demo.mp4).
+
 A [Raycast](https://raycast.com) extension that rewrites text with an LLM, using your own API key.
 Six prompts ship as commands, so each can have a hotkey: **Fix Errors**, **Make Shorter**,
 **Make Longer**, **More Professional**, **More Casual**, **For Slack**. Edit them, add your own,
@@ -8,11 +13,6 @@ and change the rules every prompt shares.
 ![Prompts command: built-in and custom prompts with the instruction in a side panel](metadata/prompter-1.png)
 
 ![Fix Errors result: the corrected text, Enter pastes it over the selection](metadata/prompter-2.png)
-
-![Demo: Fix Errors in preview mode, then Make Shorter with Output set to paste](docs/demo.gif)
-
-Fix Errors in preview mode with the copy toast and Enter to paste, then Make Shorter with Output set
-to paste. [Full-quality video](docs/demo.mp4).
 
 ## Install
 
